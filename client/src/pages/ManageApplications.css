@@ -1,0 +1,127 @@
+.manage-header {
+  margin-bottom: var(--space-xl);
+}
+
+.manage-header h1 {
+  font-size: 1.75rem;
+  margin-bottom: var(--space-xs);
+}
+
+.manage-header p {
+  color: var(--color-text-secondary);
+}
+
+.applicants-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.applicant-card {
+  padding: var(--space-xl);
+}
+
+.applicant-card:hover {
+  transform: none;
+}
+
+.applicant-main {
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-xl);
+}
+
+.applicant-info {
+  display: flex;
+  gap: var(--space-md);
+  flex: 1;
+}
+
+.applicant-avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: var(--color-accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.375rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.applicant-details h3 {
+  font-size: 1.125rem;
+  margin-bottom: var(--space-xs);
+}
+
+.applicant-contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-md);
+  margin-bottom: var(--space-sm);
+}
+
+.applicant-contact span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.813rem;
+  color: var(--color-text-muted);
+}
+
+.applicant-skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: var(--space-sm);
+}
+
+.applicant-exp {
+  font-size: 0.813rem;
+  color: var(--color-text-secondary);
+}
+
+.applicant-actions-col {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-md);
+}
+
+.status-buttons {
+  display: flex;
+  gap: var(--space-xs);
+}
+
+.cover-letter-section {
+  margin-top: var(--space-lg);
+  padding-top: var(--space-lg);
+  border-top: 1px solid var(--color-border);
+}
+
+.cover-letter-section h4 {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin-bottom: var(--space-sm);
+  color: var(--color-text-secondary);
+}
+
+.cover-letter-section p {
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  line-height: 1.7;
+}
+
+@media (max-width: 768px) {
+  .applicant-main {
+    flex-direction: column;
+  }
+
+  .applicant-actions-col {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+  }
+}

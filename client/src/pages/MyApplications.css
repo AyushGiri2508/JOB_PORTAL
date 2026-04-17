@@ -1,0 +1,219 @@
+.my-apps-header {
+  margin-bottom: var(--space-xl);
+}
+
+.my-apps-header h1 {
+  font-size: 2rem;
+  margin-bottom: var(--space-xs);
+}
+
+.my-apps-header p {
+  color: var(--color-text-secondary);
+}
+
+/* Status Tabs */
+.status-tabs {
+  display: flex;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-xl);
+  overflow-x: auto;
+  padding-bottom: var(--space-sm);
+}
+
+.status-tab {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0.625rem 1.25rem;
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-full);
+  color: var(--color-text-secondary);
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  white-space: nowrap;
+}
+
+.status-tab:hover {
+  border-color: var(--color-border-hover);
+}
+
+.status-tab.active {
+  background: rgba(59, 130, 246, 0.12);
+  border-color: var(--color-accent-primary);
+  color: var(--color-accent-primary);
+}
+
+.tab-count {
+  padding: 0.1rem 0.4rem;
+  background: rgba(255, 255, 255, 0.08);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem;
+  min-width: 20px;
+  text-align: center;
+}
+
+.status-tab.active .tab-count {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+/* Application Cards */
+.applications-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-lg);
+}
+
+.application-card {
+  padding: var(--space-xl);
+}
+
+.application-card:hover {
+  transform: none;
+}
+
+.app-card-main {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--space-md);
+  margin-bottom: var(--space-lg);
+}
+
+.app-card-info {
+  display: flex;
+  gap: var(--space-md);
+}
+
+.app-company-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-md);
+  background: var(--color-accent-gradient);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: white;
+  flex-shrink: 0;
+}
+
+.app-card-info h3 {
+  font-size: 1.125rem;
+  margin-bottom: 2px;
+}
+
+.app-company {
+  color: var(--color-text-secondary);
+  font-size: 0.875rem;
+  margin-bottom: var(--space-xs);
+}
+
+.app-meta {
+  display: flex;
+  gap: var(--space-md);
+  flex-wrap: wrap;
+}
+
+.app-meta span {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.813rem;
+  color: var(--color-text-muted);
+}
+
+/* Status Timeline */
+.status-timeline {
+  padding-top: var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.timeline-track {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: relative;
+  padding: var(--space-md) 0;
+}
+
+.timeline-track::before {
+  content: '';
+  position: absolute;
+  top: calc(var(--space-md) + 10px);
+  left: 10px;
+  right: 10px;
+  height: 2px;
+  background: var(--color-border);
+}
+
+.timeline-step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--space-sm);
+  position: relative;
+  z-index: 1;
+}
+
+.timeline-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-border);
+  transition: all var(--transition-normal);
+}
+
+.timeline-step.completed .timeline-dot {
+  background: var(--color-accent-primary);
+  border-color: var(--color-accent-primary);
+  box-shadow: 0 0 12px rgba(59, 130, 246, 0.4);
+}
+
+.timeline-step.current .timeline-dot {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+.timeline-label {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  font-weight: 500;
+}
+
+.timeline-step.completed .timeline-label {
+  color: var(--color-accent-primary);
+}
+
+.status-rejected-bar {
+  display: flex;
+  align-items: center;
+  gap: var(--space-md);
+  padding: var(--space-md);
+  background: rgba(239, 68, 68, 0.06);
+  border-radius: var(--radius-md);
+}
+
+.status-rejected-bar p {
+  font-size: 0.875rem;
+  color: var(--color-text-muted);
+}
+
+@media (max-width: 768px) {
+  .app-card-main {
+    flex-direction: column;
+  }
+
+  .status-tabs {
+    gap: var(--space-xs);
+  }
+
+  .status-tab {
+    padding: 0.5rem 0.875rem;
+    font-size: 0.813rem;
+  }
+}
