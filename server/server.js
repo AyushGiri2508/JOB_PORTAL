@@ -22,7 +22,7 @@ const app = express();
 
 // Middleware
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000','procss.env.VITE_CLIENT_URL'],
+  origin: ['http://localhost:5173', 'http://localhost:3000', process.env.CLIENT_URL].filter(Boolean),
   credentials: true,
 }));
 app.use(express.json({ limit: '10mb' }));
