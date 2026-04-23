@@ -1,7 +1,6 @@
-import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { getJob, applyToJob } from '../api';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../hooks/useAuth';
+import { useJobDetails } from '../hooks/useJobDetails';
 import { motion } from 'framer-motion';
 import {
   HiOutlineLocationMarker,
@@ -19,49 +18,20 @@ import './JobDetails.css';
 const JobDetails = () => {
   const { id } = useParams();
   const { user, isAuthenticated, isJobseeker } = useAuth();
-  const [job, setJob] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [applying, setApplying] = useState(false);
-  const [applied, setApplied] = useState(false);
-  const [coverLetter, setCoverLetter] = useState('');
-  const [showApplyForm, setShowApplyForm] = useState(false);
+  const {
+    job, loading, applying, applied,
+    coverLetter, setCoverLetter,
+    showApplyForm, setShowApplyForm,
+    handleApply,
+  } = useJobDetails(id, user);
 
-  useEffect(() => {
-    fetchJob();
-  }, [id]);
-
-  const fetchJob = async () => {
+  const onApply = async () => {
+    if (!isAuthenticated) return toast.error('Please login to apply');
     try {
-      const { data } = await getJob(id);
-      setJob(data.job);
-      // Check if user already applied
-      if (data.job.applications && user) {
-        const hasApplied = data.job.applications.some(
-          (app) => app.applicant?.toString() === user._id || app.applicant === user._id
-        );
-        setApplied(hasApplied);
-      }
-    } catch (err) {
-      toast.error('Job not found');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleApply = async () => {
-    if (!isAuthenticated) {
-      return toast.error('Please login to apply');
-    }
-    setApplying(true);
-    try {
-      await applyToJob(id, { coverLetter });
-      setApplied(true);
-      setShowApplyForm(false);
+      await handleApply();
       toast.success('Application submitted successfully! 🎉');
     } catch (err) {
       toast.error(err.response?.data?.message || 'Failed to apply');
-    } finally {
-      setApplying(false);
     }
   };
 
@@ -124,27 +94,12 @@ const JobDetails = () => {
               </div>
 
               <div className="job-detail-info-grid">
-                <div className="info-item">
-                  <HiOutlineLocationMarker />
-                  <span>{job.location}</span>
-                </div>
-                <div className="info-item">
-                  <HiOutlineCurrencyRupee />
-                  <span>{job.salary}</span>
-                </div>
-                <div className="info-item">
-                  <HiOutlineBriefcase />
-                  <span>{job.experience}</span>
-                </div>
-                <div className="info-item">
-                  <HiOutlineClock />
-                  <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
-                </div>
+                <div className="info-item"><HiOutlineLocationMarker /><span>{job.location}</span></div>
+                <div className="info-item"><HiOutlineCurrencyRupee /><span>{job.salary}</span></div>
+                <div className="info-item"><HiOutlineBriefcase /><span>{job.experience}</span></div>
+                <div className="info-item"><HiOutlineClock /><span>Posted {new Date(job.createdAt).toLocaleDateString()}</span></div>
                 {job.deadline && (
-                  <div className="info-item">
-                    <HiOutlineCalendar />
-                    <span>Deadline: {new Date(job.deadline).toLocaleDateString()}</span>
-                  </div>
+                  <div className="info-item"><HiOutlineCalendar /><span>Deadline: {new Date(job.deadline).toLocaleDateString()}</span></div>
                 )}
               </div>
 
@@ -174,17 +129,11 @@ const JobDetails = () => {
           <div className="job-detail-sidebar">
             <div className="glass-card apply-card">
               {applied ? (
-                <div className="applied-badge">
-                  <HiOutlineCheck /> You've Applied
-                </div>
+                <div className="applied-badge"><HiOutlineCheck /> You've Applied</div>
               ) : isJobseeker ? (
                 <>
                   {!showApplyForm ? (
-                    <button
-                      className="btn btn-primary btn-lg apply-btn"
-                      onClick={() => setShowApplyForm(true)}
-                      disabled={job.status === 'closed'}
-                    >
+                    <button className="btn btn-primary btn-lg apply-btn" onClick={() => setShowApplyForm(true)} disabled={job.status === 'closed'}>
                       {job.status === 'closed' ? 'Position Closed' : 'Apply Now'}
                     </button>
                   ) : (
@@ -192,51 +141,30 @@ const JobDetails = () => {
                       <h3>Apply for this position</h3>
                       <div className="form-group">
                         <label className="form-label">Cover Letter (Optional)</label>
-                        <textarea
-                          className="form-textarea"
-                          placeholder="Write a brief cover letter..."
-                          value={coverLetter}
-                          onChange={(e) => setCoverLetter(e.target.value)}
-                          rows={5}
-                        />
+                        <textarea className="form-textarea" placeholder="Write a brief cover letter..." value={coverLetter} onChange={(e) => setCoverLetter(e.target.value)} rows={5} />
                       </div>
                       <div className="apply-form-actions">
-                        <button
-                          className="btn btn-primary"
-                          onClick={handleApply}
-                          disabled={applying}
-                        >
+                        <button className="btn btn-primary" onClick={onApply} disabled={applying}>
                           {applying ? <div className="btn-loader" /> : 'Submit Application'}
                         </button>
-                        <button
-                          className="btn btn-secondary"
-                          onClick={() => setShowApplyForm(false)}
-                        >
-                          Cancel
-                        </button>
+                        <button className="btn btn-secondary" onClick={() => setShowApplyForm(false)}>Cancel</button>
                       </div>
                     </div>
                   )}
                 </>
               ) : !isAuthenticated ? (
-                <Link to="/login" className="btn btn-primary btn-lg apply-btn">
-                  Login to Apply
-                </Link>
+                <Link to="/login" className="btn btn-primary btn-lg apply-btn">Login to Apply</Link>
               ) : null}
 
               {user?.resume && (
-                <p className="resume-attached">
-                  ✅ Your resume is attached to this application
-                </p>
+                <p className="resume-attached">✅ Your resume is attached to this application</p>
               )}
             </div>
 
             <div className="glass-card sidebar-info-card">
               <h3>About {job.company}</h3>
               <div className="sidebar-company-info">
-                <div className="sidebar-avatar">
-                  {job.company?.charAt(0).toUpperCase()}
-                </div>
+                <div className="sidebar-avatar">{job.company?.charAt(0).toUpperCase()}</div>
                 <div>
                   <p className="sidebar-company-name">{job.company}</p>
                   {job.postedBy?.name && (

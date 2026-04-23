@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { getMyApplications } from '../api';
+import { useApplications } from '../hooks/useApplications';
 import { motion } from 'framer-motion';
 import {
   HiOutlineBriefcase,
@@ -11,44 +10,11 @@ import {
 import './MyApplications.css';
 
 const MyApplications = () => {
-  const [applications, setApplications] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
-
-  useEffect(() => {
-    fetchApplications();
-  }, []);
-
-  const fetchApplications = async () => {
-    try {
-      const { data } = await getMyApplications();
-      setApplications(data.applications);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const filtered =
-    filter === 'all'
-      ? applications
-      : applications.filter((app) => app.status === filter);
-
-  const statusSteps = ['pending', 'reviewed', 'shortlisted', 'hired'];
-
-  const getStatusIndex = (status) => {
-    if (status === 'rejected') return -1;
-    return statusSteps.indexOf(status);
-  };
-
-  const timeAgo = (date) => {
-    const diff = Date.now() - new Date(date).getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return 'Today';
-    if (days === 1) return '1 day ago';
-    return `${days} days ago`;
-  };
+  const {
+    applications, filtered, loading,
+    filter, setFilter,
+    statusSteps, getStatusIndex, timeAgo,
+  } = useApplications();
 
   if (loading) {
     return (
@@ -96,9 +62,7 @@ const MyApplications = () => {
                 ? "You haven't applied to any jobs yet"
                 : `No ${filter} applications`}
             </p>
-            <Link to="/jobs" className="btn btn-primary">
-              Browse Jobs
-            </Link>
+            <Link to="/jobs" className="btn btn-primary">Browse Jobs</Link>
           </div>
         ) : (
           <div className="applications-list">
@@ -119,22 +83,13 @@ const MyApplications = () => {
                       <h3>{app.job?.title || 'Job Title'}</h3>
                       <p className="app-company">{app.job?.company}</p>
                       <div className="app-meta">
-                        <span>
-                          <HiOutlineLocationMarker /> {app.job?.location}
-                        </span>
-                        <span>
-                          <HiOutlineBriefcase /> {app.job?.type}
-                        </span>
-                        <span>
-                          <HiOutlineClock /> Applied {timeAgo(app.createdAt)}
-                        </span>
+                        <span><HiOutlineLocationMarker /> {app.job?.location}</span>
+                        <span><HiOutlineBriefcase /> {app.job?.type}</span>
+                        <span><HiOutlineClock /> Applied {timeAgo(app.createdAt)}</span>
                       </div>
                     </div>
                   </div>
-                  <Link
-                    to={`/jobs/${app.job?._id}`}
-                    className="btn btn-secondary btn-sm"
-                  >
+                  <Link to={`/jobs/${app.job?._id}`} className="btn btn-secondary btn-sm">
                     <HiOutlineExternalLink /> View Job
                   </Link>
                 </div>

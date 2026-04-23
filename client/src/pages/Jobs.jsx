@@ -1,6 +1,5 @@
-import { useState, useEffect } from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
-import { getJobs } from '../api';
+import { Link } from 'react-router-dom';
+import { useJobs } from '../hooks/useJobs';
 import { motion } from 'framer-motion';
 import {
   HiOutlineSearch,
@@ -14,80 +13,15 @@ import {
 import './Jobs.css';
 
 const Jobs = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const [jobs, setJobs] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [pagination, setPagination] = useState({});
-  const [showFilters, setShowFilters] = useState(false);
-
-  const [filters, setFilters] = useState({
-    search: searchParams.get('search') || '',
-    location: searchParams.get('location') || '',
-    type: searchParams.get('type') || '',
-    category: searchParams.get('category') || '',
-    page: 1,
-  });
-
-  useEffect(() => {
-    fetchJobs();
-  }, [filters.page]);
-
-  const fetchJobs = async () => {
-    setLoading(true);
-    try {
-      const params = {};
-      if (filters.search) params.search = filters.search;
-      if (filters.location) params.location = filters.location;
-      if (filters.type) params.type = filters.type;
-      if (filters.category) params.category = filters.category;
-      params.page = filters.page;
-
-      const { data } = await getJobs(params);
-      setJobs(data.jobs);
-      setPagination(data.pagination);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleSearch = (e) => {
-    e.preventDefault();
-    setFilters({ ...filters, page: 1 });
-    fetchJobs();
-  };
-
-  const clearFilters = () => {
-    setFilters({ search: '', location: '', type: '', category: '', page: 1 });
-    setSearchParams({});
-    setTimeout(fetchJobs, 0);
-  };
-
-  const getTypeColor = (type) => {
-    const colors = {
-      'full-time': 'badge-success',
-      'part-time': 'badge-warning',
-      contract: 'badge-purple',
-      internship: 'badge-primary',
-      remote: 'badge-secondary',
-    };
-    return colors[type] || 'badge-primary';
-  };
-
-  const timeAgo = (date) => {
-    const diff = Date.now() - new Date(date).getTime();
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-    if (days === 0) return 'Today';
-    if (days === 1) return '1 day ago';
-    if (days < 30) return `${days} days ago`;
-    return `${Math.floor(days / 30)} months ago`;
-  };
+  const {
+    jobs, loading, pagination, filters, setFilters,
+    showFilters, setShowFilters, handleSearch, clearFilters,
+    getTypeColor, timeAgo,
+  } = useJobs();
 
   return (
     <div className="page-wrapper">
       <div className="container">
-        {/* Search & Filters Header */}
         <div className="jobs-header">
           <div className="jobs-header-text">
             <h1>Find Your Perfect Job</h1>
@@ -127,7 +61,6 @@ const Jobs = () => {
             </button>
           </form>
 
-          {/* Filter Bar */}
           {showFilters && (
             <motion.div
               className="filter-bar"
@@ -173,7 +106,6 @@ const Jobs = () => {
           )}
         </div>
 
-        {/* Job Results */}
         {loading ? (
           <div className="loader-container">
             <div className="loader" />
@@ -211,28 +143,18 @@ const Jobs = () => {
                     </div>
 
                     <div className="job-card-details">
-                      <span>
-                        <HiOutlineLocationMarker /> {job.location}
-                      </span>
-                      <span>
-                        <HiOutlineCurrencyRupee /> {job.salary}
-                      </span>
-                      <span>
-                        <HiOutlineBriefcase /> {job.experience}
-                      </span>
+                      <span><HiOutlineLocationMarker /> {job.location}</span>
+                      <span><HiOutlineCurrencyRupee /> {job.salary}</span>
+                      <span><HiOutlineBriefcase /> {job.experience}</span>
                     </div>
 
                     {job.skills?.length > 0 && (
                       <div className="job-card-skills">
                         {job.skills.slice(0, 4).map((skill, i) => (
-                          <span key={i} className="skill-tag">
-                            {skill}
-                          </span>
+                          <span key={i} className="skill-tag">{skill}</span>
                         ))}
                         {job.skills.length > 4 && (
-                          <span className="skill-tag skill-more">
-                            +{job.skills.length - 4}
-                          </span>
+                          <span className="skill-tag skill-more">+{job.skills.length - 4}</span>
                         )}
                       </div>
                     )}
@@ -248,7 +170,6 @@ const Jobs = () => {
               ))}
             </div>
 
-            {/* Pagination */}
             {pagination.pages > 1 && (
               <div className="pagination">
                 <button

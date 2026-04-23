@@ -31,14 +31,14 @@ API.interceptors.response.use(
   }
 );
 
-// ===== AUTH =====
+// ============== Auth ==============
 export const registerUser = (data) => API.post('/auth/register', data);
 export const loginUser = (data) => API.post('/auth/login', data);
 export const googleLogin = (data) => API.post('/auth/google', data);
 export const getMe = () => API.get('/auth/me');
 export const updateProfile = (data) => API.put('/auth/update-profile', data);
 
-// ===== JOBS =====
+// ============== Jobs ==============
 export const getJobs = (params) => API.get('/jobs', { params });
 export const getJob = (id) => API.get(`/jobs/${id}`);
 export const createJob = (data) => API.post('/jobs', data);
@@ -46,7 +46,7 @@ export const updateJob = (id, data) => API.put(`/jobs/${id}`, data);
 export const deleteJob = (id) => API.delete(`/jobs/${id}`);
 export const getMyJobs = () => API.get('/jobs/my-jobs');
 
-// ===== APPLICATIONS =====
+// ============== Applications ==============
 export const applyToJob = (jobId, data) => API.post(`/applications/${jobId}`, data);
 export const getMyApplications = () => API.get('/applications/me');
 export const getJobApplications = (jobId) => API.get(`/applications/job/${jobId}`);
@@ -54,13 +54,13 @@ export const updateApplicationStatus = (id, status) =>
   API.put(`/applications/${id}/status`, { status });
 export const getDashboardStats = () => API.get('/applications/stats');
 
-// ===== RESUME =====
+// ============== Resume ==============
 export const uploadResume = (formData) =>
   API.post('/resume/upload', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });
 
-// ===== AI =====
+// ============== AI ==============
 export const analyzeResume = (formData) =>
   API.post('/ai/analyze-resume', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
